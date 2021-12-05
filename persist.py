@@ -18,7 +18,7 @@ class Persist:
 
         try:
             #a=df.rdd.getNumPartitions()
-            df.write.coalesce(2).format("orc").mode("append").insertInto(Raw_schema+'.'+Raw_table)
+            df.write.format("orc").mode("append").insertInto(Raw_schema+'.'+Raw_table)
 
             return df
         except Exception as exp1:
