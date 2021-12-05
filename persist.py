@@ -13,10 +13,12 @@ class Persist:
 
     def persist_data(self,df):
         logging.info("Raw data persist started")
-        Raw_Table = os.environ.get('RAW_TABLE')
+        Raw_schema = os.environ.get('RAW_SCHEMA')
+        Raw_table = os.environ.get('RAW_TABLE')
+
 
         try:
-            df.write.format("orc").mode("append").saveAsTable(f"{Raw_Table}")
+            df.write.format("orc").mode("append").saveAsTable(Raw_schema+'.'+Raw_table)
 
             return df
         except Exception as exp1:
