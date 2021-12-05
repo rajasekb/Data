@@ -44,7 +44,6 @@ class Pipeline:
         daily_transform_process = transform.Transform(self.spark)
         logging.info("Daily Data transformation started")
         daily_transformed_df = daily_transform_process.daily_transform_data(df1)
-        daily_transformed_df.show(10,truncate=False)
         logging.info("Daily Data Transformation completed")
 
         persist_process = persist.Persist(self.spark)
