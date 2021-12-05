@@ -23,13 +23,39 @@ class Transform:
             logging.error("An error while transforming raw data " + str(exp1))
             sys.exit(1)
 
-    def orders_transform_data(self,df1):
-        logging.info("Data Tranformation started")
+    def daily_transform_data(self,df1):
+        logging.info("Daily data Tranformation started")
 
         try:
-            df1.createOrReplaceTempView("orders_tempview")
-            df2 = self.spark.sql("select order_prod_id from orders_tempview")
+            cook_time = F.col("cookTime")
+            prep_Time = F.col("prepTime")
+            h1 = F.regexp_extract(cook_time, 'PT([0-9]*)H([0-9]*)M', 1).cast("int")
+            m1 = F.regexp_extract(cook_time, 'PT([0-9]*)H([0-9]*)M', 2).cast("int")
+            h2 = F.regexp_extract(cook_time, 'PT([0-9]*)H$', 1).cast("int")
+            m2 = F.regexp_extract(cook_time, 'PT([0-9]*)M', 1).cast("int")
+
+            time = F.when(h1.isNotNull() & m1.isNotNull(), h1 * 60 + m1) \
+                .when(h2.isNotNull(), h2 * 60) \
+                .when(m2.isNotNull(), m2) \
+                .otherwise(0)
+
+            h1 = F.regexp_extract(prep_Time, 'PT([0-9]*)H([0-9]*)M', 1).cast("int")
+            m1 = F.regexp_extract(prep_Time, 'PT([0-9]*)H([0-9]*)M', 2).cast("int")
+            h2 = F.regexp_extract(prep_Time, 'PT([0-9]*)H$', 1).cast("int")
+            m2 = F.regexp_extract(prep_Time, 'PT([0-9]*)M', 1).cast("int")
+
+            time1 = F.when(h1.isNotNull() & m1.isNotNull(), h1 * 60 + m1) \
+                .when(h2.isNotNull(), h2 * 60) \
+                .when(m2.isNotNull(), m2) \
+                .otherwise(0)
+
+            df1 = df1.withColumn("cookTimeMin", time)
+            df1 = df1.withColumn("prepTimeTimeMin", time1)
+
+            df2 = self.spark.sql("select DIFFUCLTY,avg(Total_time) as Avg_Total_Time from (select a.Total_time,CASE WHEN a.Total_time <=30 THEN 'EASY' WHEN a.Total_time > 30 AND a.Total_time <=60 THEN 'MEDIUM' ELSE 'HARD' END AS DIFFUCLTY from (select (cookTimeMin+prepTimeTimeMin) as Total_time from Hello_fresh_Temp where (cookTimeMin+prepTimeTimeMin) >0 and upper(ingredients) like '%BEEF%') a ) b group by DIFFUCLTY")
+
             return df2
+
         except Exception as exp1:
-            logging.error("An error while transforming the data " + str(exp1))
+            logging.error("An error while transforming daily data " + str(exp1))
             sys.exit(1)

@@ -34,18 +34,22 @@ class Pipeline:
         logging.info("Raw Data persisit completed")
 
 
-        ingest_process_orders = ingest.Ingest(self.spark)
-        logging.info("Orders Data Ingestion started")
-        ingest_process_orders.orders_data()
-        df1 = ingest_process_orders.orders_data()
+        Daily_ingest_process = ingest.Ingest(self.spark)
+        logging.info("Daily Data extraction started")
+        Daily_ingest_process.Daily_data()
+        df1 = Daily_ingest_process.Daily_data()
         df1.show()
-        logging.info("Orders Data Ingestion completed")
+        logging.info("Daily Data extraction completed")
 
-        orders_transform_process = transform.Transform(self.spark)
-        logging.info("Orders Data transformation started")
-        orders_transformed_df = orders_transform_process.orders_transform_data(df1)
-        orders_transformed_df.show(10,truncate=False)
-        logging.info("Orders Data Transformation completed")
+        daily_transform_process = transform.Transform(self.spark)
+        logging.info("Daily Data transformation started")
+        daily_transformed_df = daily_transform_process.daily_transform_data(df1)
+        daily_transformed_df.show(10,truncate=False)
+        logging.info("Daily Data Transformation completed")
+
+        persist_process = persist.Persist(self.spark)
+        persist_process.Daily_data_persist(daily_transformed_df)
+        logging.info("Daily Data persisit completed")
 
         return
 

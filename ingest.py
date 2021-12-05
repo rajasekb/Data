@@ -24,16 +24,16 @@ class Ingest:
             logging.error("An error while extracting raw data " + str(exp1))
             sys.exit(1)
 
-    def orders_data(self):
-        orders_src_dir = os.environ.get('ORDERS_SRC_DIR')
-        orders_src_file_format = os.environ.get('ORDERS_SRC_FILE_FORMAT')
+    def Daily_data(self):
+        #orders_src_dir = os.environ.get('ORDERS_SRC_DIR')
+        #orders_src_file_format = os.environ.get('ORDERS_SRC_FILE_FORMAT')
 
         try:
-            customer_df = self.spark.read.option("header","true").format(orders_src_file_format).load(orders_src_dir)
-            return customer_df
+            daily_df = self.spark.sql("select * from raj.Hello_Fresh")
+            return daily_df
 
         except Exception as exp1:
-            logging.error("An error while transforming the data " + str(exp1))
+            logging.error("An error while extracting daily data " + str(exp1))
             sys.exit(1)
 
 
