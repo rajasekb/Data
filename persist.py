@@ -18,7 +18,7 @@ class Persist:
 
 
         try:
-            df.write.format("orc").mode("append").saveAsTable(Raw_schema+'.'+Raw_table)
+            df.write.format("orc").mode("append").insertInto(Raw_schema+'.'+Raw_table)
 
             return df
         except Exception as exp1:
