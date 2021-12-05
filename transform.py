@@ -51,13 +51,14 @@ class Transform:
             time = time + time1
             df2 = df1.withColumn("cookTimeMin", time)
 
+            logging.info("Daily data Tranformation time calculation completed")
+
             difficulty = F.when(time < 30, "easy") \
                 .when((time >= 30) & (time <= 60), "medium") \
                 .otherwise("hard")
+            logging.info("Daily data Tranformation time Issue query started")
 
-            df3 = df2.filter(F.lower(F.col("ingredients")).rlike("beef")) \
-    .withColumn("difficulty", difficulty) \
-    .groupBy("difficulty").agg(F.avg("cookTimeMin").alias("avgTime")).show()
+            df3 = df2.filter(F.lower(F.col("ingredients")).rlike("beef")).withColumn("difficulty", difficulty).groupBy("difficulty").agg(F.avg("cookTimeMin").alias("avgTime")).show()
 
             return df3
 
