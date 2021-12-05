@@ -8,5 +8,5 @@ export RAW_TABLE=Hello_Fresh
 export RAW_SCHEMA=raj
 export PUBHLISH_SCHEMA=raj
 export PUBHLISH_TABLE=Hello_Fresh_Final
-###zip All_files.zip transform.py persist.py ingest.py
+#zip All_files.zip transform.py persist.py ingest.py
 spark-submit --master yarn --py-files /home/itv001389/Data/All_files.zip /home/itv001389/Data/data_pipeline.py
