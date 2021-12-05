@@ -16,8 +16,7 @@ class Persist:
         Raw_Table = os.environ.get('RAW_TABLE')
 
         try:
-            self.spark.sql("use raj")
-            df.write.format("orc").mode("append").saveAsTable(Raw_Table)
+            df.write.format("orc").mode("append").saveAsTable(f"{Raw_Table}")
 
             return df
         except Exception as exp1:
