@@ -15,7 +15,7 @@ class Transform:
         try:
             df.createOrReplaceTempView("Raw_data")
             df1 = self.spark.sql("select cookTime,cast(datePublished as date),\
-            description,image,name,prepTime,recipeYield,url,split(ingredients,'\n') as ingredients,\
+            description,image,name,prepTime,recipeYield,url, ingredients,\
             substring(datePublished,1,7) Year_Date from Raw_data WHERE cast(datePublished as date) <= current_date ")
 
             return df1
@@ -49,16 +49,13 @@ class Transform:
                 .when(m2.isNotNull(), m2) \
                 .otherwise(0)
             time = time + time1
-            df2 = df1.withColumn("cookTimeMin", time)
+            df1 = df1.withColumn("cookTimeMin", time)
+            df2 = df1.withColumn("prepTimeTimeMin", time1)
 
             logging.info("Daily data Tranformation time calculation completed")
+            df2.createOrReplaceTempView("Hello_fresh_Temp")
 
-            difficulty = F.when(time < 30, "easy") \
-                .when((time >= 30) & (time <= 60), "medium") \
-                .otherwise("hard")
-            logging.info("Daily data Tranformation time Issue query started")
-
-            df3 = df2.filter(F.lower(F.col("ingredients")).rlike("beef")).withColumn("difficulty", difficulty).groupBy("difficulty").agg(F.avg("cookTimeMin").alias("avgTime")).show()
+            df3 = self.spark.sql("select DIFFUCLTY,avg(Total_time) as Avg_Total_Time from (select a.Total_time,CASE WHEN a.Total_time <=30 THEN 'EASY' WHEN a.Total_time > 30 AND a.Total_time <=60 THEN 'MEDIUM' ELSE 'HARD' END AS DIFFUCLTY from (select (cookTimeMin+prepTimeTimeMin) as Total_time from Hello_fresh_Temp where (cookTimeMin+prepTimeTimeMin) >0 and upper(ingredients) like '%BEEF%') a ) b group by DIFFUCLTY")
 
             return df3
 
