@@ -13,10 +13,12 @@ class Persist:
 
     def persist_data(self,df):
         logging.info("Raw data persist started")
+        Raw_Table = os.environ.get('RAW_TABLE')
+
         try:
-            df.write.format("orc").mode("append").insertInto("raj.Hello_Fresh")
+            df.write.format("orc").mode("append").insertInto(Raw_Table)
 
             return df
         except Exception as exp1:
-            logging.error("An error while transforming raw data " + str(exp1))
+            logging.error("An error while persisting raw data " + str(exp1))
             sys.exit(1)
