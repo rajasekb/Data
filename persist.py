@@ -17,7 +17,8 @@ class Persist:
         Raw_table = os.environ.get('RAW_TABLE')
 
         try:
-            df.write.format("orc").mode("append").insertInto(Raw_schema+'.'+Raw_table)
+            a=df.rdd.getNumPartitions()
+            df.write.coalesce(int(a)).format("orc").mode("append").insertInto(Raw_schema+'.'+Raw_table)
 
             return df
         except Exception as exp1:

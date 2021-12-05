@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export SRC_DIR=hdfs://m01.itversity.com:9000/user/itv001389/Hello_Fresh/SRC;
+export SRC_FILE_FORMAT=json;
+export ORDERS_SRC_FILE_FORMAT=csv;
+export ORDERS_SRC_DIR=hdfs://m01.itversity.com:9000/user/itv001389/retail_db/orders
+export RAW_TABLE=Hello_Fresh
+export RAW_SCHEMA=raj
+export PUBHLISH_SCHEMA=raj
+export PUBHLISH_TABLE=Hello_Fresh_Final
+
+spark-submit --master yarn --py-files /home/itv001389/Data/All_files.zip /home/itv001389/Data/data_pipeline.py
