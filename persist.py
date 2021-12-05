@@ -16,7 +16,7 @@ class Persist:
         Raw_Table = os.environ.get('RAW_TABLE')
 
         try:
-            df.write.format("orc").mode("append").insertInto(Raw_Table)
+            df.write.format("orc").mode("append").saveAsTable(Raw_Table)
 
             return df
         except Exception as exp1:
