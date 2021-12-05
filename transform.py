@@ -16,7 +16,7 @@ class Transform:
             df.createOrReplaceTempView("Raw_data")
             df1 = self.spark.sql("select cookTime,cast(datePublished as date),\
             description,image,name,prepTime,recipeYield,url, ingredients,\
-            substring(datePublished,1,7) Year_Date from Raw_data WHERE cast(datePublished as date) <= current_date ")
+            substring(datePublished,1,7) Year_Date from Raw_data WHERE cast(datePublished as date) <= current_date and (cookTime !='PT' and  prepTime !='PT')")
 
             return df1
         except Exception as exp1:
@@ -56,6 +56,7 @@ class Transform:
             df2.createOrReplaceTempView("Hello_fresh_Temp")
 
             df3 = self.spark.sql("select DIFFUCLTY,avg(Total_time) as Avg_Total_Time from (select a.Total_time,CASE WHEN a.Total_time <=30 THEN 'EASY' WHEN a.Total_time > 30 AND a.Total_time <=60 THEN 'MEDIUM' ELSE 'HARD' END AS DIFFUCLTY from (select (cookTimeMin+prepTimeTimeMin) as Total_time from Hello_fresh_Temp where (cookTimeMin+prepTimeTimeMin) >0 and upper(ingredients) like '%BEEF%') a ) b group by DIFFUCLTY")
+            df4 = self.spark.sql("select diffuclty,avg_total_time from raj.Hello_Fresh_Final")
 
             return df3
 

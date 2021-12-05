@@ -30,7 +30,7 @@ class Persist:
         pubhlish_table = os.environ.get('PUBHLISH_TABLE')
 
         try:
-            df.write.format("orc").mode("append").insertInto(Pubhlish_schema+'.'+pubhlish_table)
+            df.write.format("orc").mode("overwrite").insertInto(Pubhlish_schema+'.'+pubhlish_table)
 
             return df
         except Exception as exp1:
