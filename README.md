@@ -37,3 +37,4 @@ This code is tested by exporting to cluster and it is working
 This code can be scheduled in Airflow as it has resilient feature (auto restart) and also provides extra logging mechanism
 This code can be integrated with looper so that code can be automatically migrated to higher enviornments
 we can use dynamic allocation of resources during spark submit so that the resources which are available in cluster will be utilized
+Thanks!
