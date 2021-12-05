@@ -50,7 +50,7 @@ class Pipeline:
         return
 
     def create_spark_session(self):
-        self.spark = SparkSession.builder.appName("Hello_Fresh").getOrCreate()
+        self.spark = SparkSession.builder.appName("Hello_Fresh").enableHiveSupport().getOrCreate()
 
 
 if __name__ == '__main__':
