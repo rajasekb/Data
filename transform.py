@@ -52,7 +52,7 @@ class Transform:
             df1 = df1.withColumn("cookTimeMin", time)
             df1 = df1.withColumn("prepTimeTimeMin", time1)
             df1.createOrReplaceTempView('Hello_fresh_Temp')
-            df2 = self.spark.sql("select DIFFUCLTY,avg(Total_time) as Avg_Total_Time from (select a.Total_time,CASE WHEN a.Total_time <=30 THEN 'EASY' WHEN a.Total_time > 30 AND a.Total_time <=60 THEN 'MEDIUM' ELSE 'HARD' END AS DIFFUCLTY from (select (cookTimeMin+prepTimeTimeMin) as Total_time from Hello_fresh_Temp where (cookTimeMin+prepTimeTimeMin) >0 and upper(ingredients) like '%BEEF%') a ) b group by DIFFUCLTY")
+            df2 = self.spark.sql("select DIFFUCLTY,avg(Total_time) as Avg_Total_Time from (select a.Total_time,CASE WHEN a.Total_time <=30 THEN 'EASY' WHEN a.Total_time > 30 AND a.Total_time <=60 THEN 'MEDIUM' ELSE 'HARD' END AS DIFFUCLTY from (select (cookTimeMin+prepTimeTimeMin) as Total_time from Hello_fresh_Temp where (cookTimeMin+prepTimeTimeMin) >0 and ingredients like '%beef%') a ) b group by DIFFUCLTY")
 
             return df2
 
